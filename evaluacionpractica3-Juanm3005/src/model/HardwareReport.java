@@ -16,7 +16,7 @@ public class HardwareReport extends Report {
     @Override
 
     public String formatToFile() {
-        return "ID: " + getId() + ", Descripcion: " + getDesscripcion() + ", Serial Number: " + serialNumber + ", Changed: " + changed + ", Hardware Type: " + hardwareType + ", Level Severity: " + getLevelSeverity() + ", Date: " + getDate();
+        return "ID: " + getId() + " - Descripcion: " + getDesscripcion() + " - Serial Number: " + serialNumber + " - Changed: " + changed + " - Hardware Type: " + hardwareType + " - Level Severity: " + getLevelSeverity() + " - Date: " + getDate();
     }
 
     public String getSerialNumber() {

@@ -45,6 +45,7 @@ public abstract class Report implements Serializable {
     }
 
     public LocalDate getDate() {
+        
         return date;
     }
 

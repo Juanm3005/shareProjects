@@ -16,7 +16,7 @@ public class SoftwareReport extends Report {
     @Override
 
     public String formatToFile() {
-        return "ID: " + getId() + ", Descripcion: " + getDesscripcion() + ", Sistema Operativo: " + sistemaOperativo + ", Software Name: " + softwareName + ", Software Version: " + softwareVersion + ", Level Severity: " + getLevelSeverity() + ", Date: " + getDate();
+        return "ID: " + getId() + " - Descripcion: " + getDesscripcion() + " - Sistema Operativo: " + sistemaOperativo + " - Software Name: " + softwareName + " - Software Version: " + softwareVersion + " - Level Severity: " + getLevelSeverity() + " - Date: " + getDate();
     }
 
     public String getSistemaOperativo() {

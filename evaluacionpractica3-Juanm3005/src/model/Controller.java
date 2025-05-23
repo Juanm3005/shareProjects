@@ -1,5 +1,6 @@
 package model;
 
+import customExceptions.InvalidFormatVersionException;
 import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
@@ -22,8 +23,25 @@ public class Controller {
         reports = new ArrayList<>();
     }
 
+    public boolean validVersion(String version) throws InvalidFormatVersionException {
+        String[] numbers = version.split("\\.");
+        if (!version.contains(".") || numbers.length != 3) {
+            throw new InvalidFormatVersionException();
+        }
+        for (String nums : numbers) {
+            try {
+                int num = Integer.parseInt(nums);
+                if (num < 0) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    public String newestDateOldestDate(){
+    public String newestDateOldestDate() {
         LocalDate newestDate = null;
         LocalDate oldestDate = null;
         for (Report report : reports) {
@@ -42,18 +60,15 @@ public class Controller {
         }
     }
 
-    public String consultReportsByDate(String date)  {
+    public String consultReportsByDate(String date) throws DateTimeParseException {
         String mensaje = "";
         LocalDate fechaConsultada = null;
-        try {
-            fechaConsultada = LocalDate.parse(date);
-        } catch (DateTimeParseException e) {
-            return "Invalid date format. Please use yyyy-MM-dd.";
-        }
-        
+
+        fechaConsultada = LocalDate.parse(date);
+
         for (Report report : reports) {
             if (report.getDate().equals(fechaConsultada)) {
-                mensaje += report.formatToFile() + "\n";
+                mensaje += report.formatToFile() + "\n \n";
             }
         }
 
@@ -63,6 +78,15 @@ public class Controller {
             mensaje = "Reports with the date " + date + ":\n" + mensaje;
         }
         return mensaje;
+    }
+
+    public boolean validDate(String date) {
+        try {
+            LocalDate.parse(date);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     public String consultReportsByLevel(int level) {
@@ -77,7 +101,7 @@ public class Controller {
         }
         for (Report report : reports) {
             if (report.getLevelSeverity() == severity) {
-                mensaje += report.formatToFile() + "\n";
+                mensaje += report.formatToFile() + "\n \n";
             }
         }
 
@@ -93,7 +117,7 @@ public class Controller {
         String mensaje = "";
         for (Report report : reports) {
             if (report.getId().equals(id)) {
-                mensaje += report.formatToFile() + "\n";
+                mensaje += report.formatToFile() + "\n \n";
             }
         }
 
@@ -109,7 +133,7 @@ public class Controller {
     public String getAllReports() {
         String mensaje = "";
         for (Report report : reports) {
-            mensaje += report.getId() + ", " + report.getLevelSeverity() + "\n";
+            mensaje += "id : " + report.getId() + ", " + "severity Level: " + report.getLevelSeverity() + "\n";
         }
 
         if (mensaje.equals("")) {
@@ -220,7 +244,6 @@ public class Controller {
         }
 
         return "";
-
     }
 
     private ArrayList<Report> reports;

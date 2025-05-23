@@ -1,0 +1,4 @@
+ID: 1 - Descripcion: no puede guardar carpetas - Sistema Operativo: windows - Software Name: visual estudio - Software Version: 1.2.3 - Level Severity: LOW - Date: 2025-05-22
+ID: 1 - Descripcion: desbordamiento de b�fer - Sistema Operativo: windows - Software Name:  Microsoft Internet Explorer - Software Version: 12.2 - Level Severity: HALF - Date: 2025-05-22
+ID: 90 - Descripcion: GPU - Sistema Operativo: MacOs - Software Name: h - Software Version: 23.99.87 - Level Severity: HIGH - Date: 2025-05-23
+ID: 12 - Descripcion: as - Sistema Operativo: 2 - Software Name: assd - Software Version: 12.25.52 - Level Severity: HALF - Date: 2025-05-23
