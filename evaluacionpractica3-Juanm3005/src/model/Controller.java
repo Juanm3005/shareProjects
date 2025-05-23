@@ -1,6 +1,5 @@
 package model;
 
-import customExceptions.InvalidId;
 import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
@@ -14,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class Controller {
@@ -22,10 +22,37 @@ public class Controller {
         reports = new ArrayList<>();
     }
 
-    public String consultReportsByDate(String date) {
-        String mensaje = "";
+
+    public String newestDateOldestDate(){
+        LocalDate newestDate = null;
+        LocalDate oldestDate = null;
         for (Report report : reports) {
-            if (report.getDate().equals(date)) {
+            if (newestDate == null || report.getDate().isAfter(newestDate)) {
+                newestDate = report.getDate();
+            }
+            if (oldestDate == null || report.getDate().isBefore(oldestDate)) {
+                oldestDate = report.getDate();
+            }
+        }
+
+        if (newestDate == null || oldestDate == null) {
+            return "No reports available.";
+        } else {
+            return "Newest date: " + newestDate + "\nOldest date: " + oldestDate;
+        }
+    }
+
+    public String consultReportsByDate(String date)  {
+        String mensaje = "";
+        LocalDate fechaConsultada = null;
+        try {
+            fechaConsultada = LocalDate.parse(date);
+        } catch (DateTimeParseException e) {
+            return "Invalid date format. Please use yyyy-MM-dd.";
+        }
+        
+        for (Report report : reports) {
+            if (report.getDate().equals(fechaConsultada)) {
                 mensaje += report.formatToFile() + "\n";
             }
         }
@@ -74,6 +101,21 @@ public class Controller {
             mensaje = "There are no reports with that id";
         } else {
             mensaje = "Reports with the id " + id + ":\n" + mensaje;
+        }
+
+        return mensaje;
+    }
+
+    public String getAllReports() {
+        String mensaje = "";
+        for (Report report : reports) {
+            mensaje += report.getId() + ", " + report.getLevelSeverity() + "\n";
+        }
+
+        if (mensaje.equals("")) {
+            mensaje = "No reports";
+        } else {
+            mensaje = "All reports:\n" + mensaje;
         }
 
         return mensaje;
@@ -208,12 +250,7 @@ public class Controller {
 
     }
 
-    public String createSoftwareReport(String sistemaOperativo, String softwareName, String softwareVersion, String description, int levelSeverity, String id) throws InvalidId {
-        int idInt = Integer.parseInt(id);
-
-        if (idInt < 0) {
-            throw new InvalidId();
-        }
+    public String createSoftwareReport(String sistemaOperativo, String softwareName, String softwareVersion, String description, int levelSeverity, String id) {
 
         try {
             SoftwareReport softwareReport = new SoftwareReport(sistemaOperativo, softwareName, softwareVersion, description, id, getLevelSeverity(levelSeverity));

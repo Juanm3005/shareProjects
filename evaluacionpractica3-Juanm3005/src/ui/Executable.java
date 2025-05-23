@@ -1,7 +1,8 @@
 package ui;
 
-import customExceptions.InvalidId;
+
 import customExceptions.InvalidSerialNumberException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import model.Controller;
 
@@ -18,32 +19,30 @@ public class Executable {
     }
 
     public static void menu() {
-        System.out.println("Welcome to the Electronic Equipment Reporting Management System \n");
+        try {
+            System.out.println("Welcome to the Electronic Equipment Reporting Management System \n");
 
-        boolean seguir = true; //valida que el usuario quiera seguir digitando opciones
-        while (seguir == true) { //valida que el usuario quiera seguir digitando opciones
+            boolean seguir = true; //valida que el usuario quiera seguir digitando opciones
+            while (seguir == true) { //valida que el usuario quiera seguir digitando opciones
 
-            int opcion = -1;
-            try {
+                int opcion = -1;
+            
 
                 while (opcion < 0 || opcion > 3) { //valida que la opcion digitada exista dentro de las opciones
                     System.out.println("what do you want to do today\n"
-                            + "1. record reports \n"
-                            + "2. consult reports \n"
-                            + "3. generate inform \n"
-                            + "0. exit \n");
+                                + "1. record reports \n"
+                                + "2. consult reports \n"
+                                + "3. generate inform \n"
+                                + "0. exit \n");
 
                     opcion = input.nextInt();  //guarda la opcion digitada por el usuario
                 }
-            } catch (Exception NumberFormatException) {
-                System.out.println("error, the entered digit is not valid"); //si no es un numero salta un mensaje de error
-            }
+                    
+                switch (opcion) {
+                    case 1:
 
-            switch (opcion) {
-                case 1:
-
-                    int reportType = -1;
-                    try {
+                        int reportType = -1;
+                    
                         while (reportType < 1 || reportType > 2) { //valida que el tipo de reporte digitado exista dentro de las opciones
 
                             System.out.println("Enter the type of report you want to record\n"
@@ -52,69 +51,83 @@ public class Executable {
 
                             reportType = input.nextInt(); //guarda el tipo de reporte digitado por el usuario
                         }
+                    
 
-                    } catch (Exception NumberFormatException) {  //valida que el tipo de reporte digitado sea un numero
-                        System.out.println("error, the entered digit is not valid"); //si no es un numero salta un mensaje de error
-                    }
+                        if (reportType == 1) {
+                            recordSoftwareReports();
+                        } else {
+                            recordHardwareReports();
+                        }
+                        break;
 
-                    if (reportType == 1) {
-                        recordSoftwareReports();
-                    } else {
-                        recordHardwareReports();
-                    }
-                    break;
+                    case 2:
+                        int consultType= 0 ;
 
-                case 2:
-                    System.out.println("how do you want to consult the reports?\n"
-                            + "1. By ID \n"
-                            + "2. By severity level \n"
-                            + "3. By date \n");
+                        while (consultType < 1 || consultType > 3) {
+                            System.out.println("how do you want to consult the reports?\n"
+                                    + "1. By ID \n"
+                                    + "2. By severity level \n"
+                                    + "3. By date \n");
 
-                    int consultType = input.nextInt();
+                        
+                            consultType = input.nextInt();
 
-                    if (consultType == 1) {
-                        consultReportsById();
-                    } else if (consultType == 2) {
-                        consultReportsByLevel();
-                    } else if (consultType == 3) {
-                        consultReportsByDate();
-                    } else {
-                        System.out.println("error, the entered digit is not valid");
-                    }
+                            if (consultType == 1) {
+                                consultReportsById();
+                            } else if (consultType == 2) {
+                                consultReportsByLevel();
+                            } else if (consultType == 3) {
+                                consultReportsByDate();
+                            } else {
+                                System.out.println("Enter one of the menu options\n");
+                            }
+                        }
 
-                    break;
+                            break;
 
-                case 3:
-                    System.out.println("Enter the type of report you want to generate\n"
-                            + "1. Software \n"
-                            + "2. Hardware \n");
+                    case 3:
+                        System.out.println("Enter the type of report you want to generate\n"
+                                + "1. Software \n"
+                                + "2. Hardware \n");
 
-                    int reportType2 = input.nextInt();
-                    if (reportType2 == 1) {
-                        System.out.println(control.saveSoftwareReportsToFile());
-                    } else {
-                        System.out.println(control.saveHardwareReportsToFile());
-                    }
+                        int reportType2 = input.nextInt();
+                        if (reportType2 == 1) {
+                            System.out.println(control.saveSoftwareReportsToFile());
+                        } else {
+                            System.out.println(control.saveHardwareReportsToFile());
+                        }
 
-                    break;
+                        break;
 
-                case 0:
-                    System.out.println("you wanna save the reports? (yes/no)");
-                    input.nextLine();
-                    String temp = input.nextLine();
-                    if (temp.equalsIgnoreCase("yes")) {
-                        System.out.println(control.saveAllReports());
-                    } else {
-                        System.out.println("the reports were not saved");
-                    }
+                    case 0:
+                        System.out.println("you wanna save the reports? (yes/no)");
+                        input.nextLine();
+                        String temp = input.nextLine();
+                        if (temp.equalsIgnoreCase("yes")) {
+                            System.out.println(control.saveAllReports());
+                        } else {
+                            System.out.println("the reports were not saved");
+                        }
 
-                    seguir = false; //valida que el usuario no quiera seguir digitando opciones
-                    break;
+                        seguir = false; //valida que el usuario no quiera seguir digitando opciones
+                        break;
+                }
             }
-        }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a numeric value.");
+
+        }catch (InvalidSerialNumberException e) {
+            System.out.println("error, the serial number is not valid (it must be a positive number)");
+
+        }catch (NumberFormatException e){
+            System.out.println("Error! You must enter a valid integer (no letters or symbols).");
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        } 
     }
 
     public static void consultReportsByDate() {
+        System.out.println(control.newestDateOldestDate());
         System.out.println("Enter the date you want to consult \n");
         System.out.println("day: ");
         input.nextLine();
@@ -124,40 +137,47 @@ public class Executable {
         System.out.println("year: ");
         String year = input.nextLine();
         String date = year + "-" + month + "-" + day;
+       
         System.out.println(control.consultReportsByDate(date));
 
     }
 
     public static void consultReportsByLevel() {
-        System.out.println("Enter the level of severity you want to consult: \n"
-                + "1. Low \n"
-                + "2. Half \n"
-                + "3. High");
-        int level = input.nextInt();
+        try {
+            System.out.println("Enter the level of severity you want to consult: \n"
+                    + "1. Low \n"
+                    + "2. Half \n"
+                    + "3. High");
+            int level = input.nextInt();
 
-        System.out.println(control.consultReportsByLevel(level));
+            System.out.println(control.consultReportsByLevel(level));
+        } catch (InputMismatchException e) {
+            System.out.println("Error: The entered digit is not valid.");
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
     }
 
     public static void consultReportsById() {
+        System.out.println(control.getAllReports());
+
         System.out.println("Enter the ID of the report you want to consult: ");
         input.nextLine();
         String id = input.nextLine();
 
+       ;
+       
         System.out.println(control.consultReportsById(id));
     }
 
-    public static void recordHardwareReports() throws InvalidSerialNumberException {
-        try {
+    public static void recordHardwareReports() throws InvalidSerialNumberException, InputMismatchException {
+        
             System.out.println("Enter the device ID: ");
             input.nextLine();
 
             String id = input.nextLine();
 
-            int idInt = Integer.parseInt(id);
-
-            if (idInt < 0) {
-                throw new InvalidId();
-            }
+           
 
             System.out.println("\nEnter the description of the problem: ");
             String description = input.nextLine();
@@ -193,28 +213,17 @@ public class Executable {
             }
 
             System.out.println(control.createHardwareReport(id, description, level, serialNumber, changed, componentType));
-        } catch (InvalidId e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (InvalidSerialNumberException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
+      
     }
 
-    public static void recordSoftwareReports() throws InvalidId {
+    public static void recordSoftwareReports()  {
 
-        try {
+      
             System.out.println("Enter the device ID: ");
 
             input.nextLine();
 
             String id = input.nextLine();
-
-            int idInt = Integer.parseInt(id);
-
-            if (idInt < 0) {
-                throw new InvalidId();
-            }
 
             System.out.println("\nEnter the description of the problem: ");
             String description = input.nextLine();
@@ -240,9 +249,7 @@ public class Executable {
             String sV = input.nextLine();
 
             System.out.println(control.createSoftwareReport(oS, softwareName, sV, description, level, id));
-        } catch (InvalidId e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        
 
     }
 
