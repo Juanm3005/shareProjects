@@ -1,0 +1,1 @@
+ID: 2, Descripcion: la tarjeta ram esta rota, Serial Number: 5023456, Changed: true, Hardware Type: almacenamiento temporal, Level Severity: HALF, Date: 2025-05-22
