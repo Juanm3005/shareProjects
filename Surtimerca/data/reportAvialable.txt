@@ -1,0 +1,2 @@
+The product with the lowest availability is: 
+1534030866 - panela - 5500.0 - 120
