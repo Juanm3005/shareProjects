@@ -67,7 +67,7 @@ public class Controller {
         fechaConsultada = LocalDate.parse(date);
 
         for (Report report : reports) {
-            if (report.getDate().equals(fechaConsultada)) {
+            if (report.getDate().isAfter(fechaConsultada) || report.getDate().equals(fechaConsultada)) {
                 mensaje += report.formatToFile() + "\n \n";
             }
         }
